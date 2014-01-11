@@ -205,6 +205,7 @@ float compareText(FILE *descriptorFile1, FILE *descriptorFile2, int nbLineDesc1,
 			}
 		}
 	}
+	free_histogram(&histogramText);
 	return(nbSameValue / (float)max * 100.0);
 }
 
