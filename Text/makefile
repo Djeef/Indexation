@@ -1,5 +1,5 @@
-tst-text: main.o histogramText.o parser.o descriptor.o
-	gcc -o tst-text main.o histogramText.o parser.o descriptor.o
+tst-text: main.o histogramText.o parser.o descriptor.o utility.o
+	gcc -o tst-text main.o histogramText.o parser.o descriptor.o utility.o
 	rm *.o
 
 histogramText.o: Sources/histogramText.c Sources/histogramText.h
@@ -13,6 +13,9 @@ descriptor.o: Sources/descriptor.c Sources/descriptor.h
 
 main.o: Sources/main.c
 	gcc -c Sources/main.c
+
+utility.o: Sources/Utility/utility.c
+	gcc -c Sources/Utility/utility.c
 
 clean:
 	rm *.o	

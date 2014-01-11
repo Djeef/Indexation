@@ -3,8 +3,8 @@ All: Indexation Compare
 Indexation: indexation.o wavFile.o wavData.o wavHeader.o histogramSound.o utility.o openPicture.o picture.o matrix.o histogram.o quantification.o histogramText.o parser.o descriptor.o
 	gcc -o Indexation indexation.o wavFile.o wavData.o wavHeader.o histogramSound.o utility.o openPicture.o picture.o matrix.o histogram.o quantification.o histogramText.o parser.o descriptor.o -lm
 
-Compare: utility.o compare.o
-	gcc -o Compare utility.o compare.o
+Compare: utility.o compare.o histogramText.o
+	gcc -o Compare utility.o compare.o histogramText.o
 
 # Compare
 
@@ -67,5 +67,3 @@ utility.o: Sources/Utility/utility.c Sources/Sound/Utility/utility.h
 
 clear: 
 	rm *.o
-	rm -r Bases
-	rm log.log

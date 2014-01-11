@@ -50,6 +50,8 @@ void init_histogram(Histogram *h);
 int is_void(Histogram *h);
 void display_histogram(Histogram *h, FILE *out);
 int get_nb_words(Histogram *h);
+void add_key_value(Histogram *h, char *key, int value);
+int get_value(Histogram *h, char *key, int *value);
 void free_histogram(Histogram *h);
 
 #endif /*HISTOGRAM_TEXT_H*/

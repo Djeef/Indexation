@@ -14,6 +14,7 @@
 #include "parser.h"
 #include "histogramText.h"
 #include "descriptor.h"
+#include "Utility/utility.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>

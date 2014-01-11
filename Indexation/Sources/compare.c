@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Utility/utility.h"
+#include "Text/histogramText.h"
 
 float comparePicture(FILE *descriptorFile1, FILE *descriptorFile2, int nbLinesMin, int nbLinesMax);
 float compareSound(FILE *descriptorFile1, FILE *descriptorFile2, int nbLinesMin, int nbLinesMax, int nbColumnsMin, int nbColumnsMax);
-float compareText(FILE *descriptorFile1, FILE *descriptorFile2, int nbLinesMin, int nbLinesMax);
+float compareText(FILE *descriptorFile1, FILE *descriptorFile2, int nbLigneDesc1, int nbLigneDesc2, int descMax);
 
 int main(int argc, char *argv[]) {
 	FILE *descriptorFile1;
@@ -58,9 +59,11 @@ int main(int argc, char *argv[]) {
 	if(nbLines1 < nbLines2) {
 		nbLinesMin = nbLines1;
 		nbLinesMax = nbLines2;
+		descMax = 2;
 	} else {
 		nbLinesMin = nbLines2;
 		nbLinesMax = nbLines1;
+		descMax = 1;
 	}
 	if(nbColumns1 < nbColumns2) {
 		nbColumnsMin = nbColumns1;
@@ -74,7 +77,7 @@ int main(int argc, char *argv[]) {
 	} else if(strcmp(type1, "sound") == 0) {
 		printf("%f\n", compareSound(descriptorFile1, descriptorFile2, nbLinesMin, nbLinesMax, nbColumnsMin, nbColumnsMax));
 	} else if(strcmp(type1, "text") == 0) {
-		printf("%f\n", compareText(descriptorFile1, descriptorFile2, nbLinesMin, nbLinesMax));
+		printf("%f\n", compareText(descriptorFile1, descriptorFile2, nbLines1, nbLines2, descMax));
 	} else {
 		printf("NOT RECONIZED TYPE \n");
 	}
@@ -135,25 +138,53 @@ float compareSound(FILE *descriptorFile1, FILE *descriptorFile2, int nbLinesMin,
 	return(nbSameValue / ((float)nbLinesMax * (float)nbColumnsMax)* 100.0);
 }
 
-float compareText(FILE *descriptorFile1, FILE *descriptorFile2, int nbLinesMin, int nbLinesMax) {
-	char buffer1[BUFFER_SIZE] = {0};
-	char buffer2[BUFFER_SIZE] = {0};
-	char word1[BUFFER_SIZE] = {0};
-	char word2[BUFFER_SIZE] = {0};
-	int value1;
-	int value2;
+
+float compareText(FILE *descriptorFile1, FILE *descriptorFile2, int nbLigneDesc1, int nbLigneDesc2, int descMax) {
+	char buffer[BUFFER_SIZE] = {0};
+	char key[BUFFER_SIZE] = {0};
+	int value;
+	int ret;
 	int i;
 	int nbSameValue = 0;
-	int res = 0;
+	int max = 0;
+	Histogram histogramText;
+	int maxLine;
+	int minLine;
 
-	for(i = 0; i < nbLinesMin; i++) {
-		fgets(buffer1, BUFFER_SIZE, descriptorFile1);
-		fgets(buffer2, BUFFER_SIZE, descriptorFile2);
-		sscanf(buffer1, "%s\t%d", word1, &value1);
-		sscanf(buffer2, "%s\t%d", word2,  &value2);
-		if(strcmp(word1, word2) == 0) {
-			nbSameValue++;
+	if(descMax == 1) {
+		maxLine = nbLigneDesc1;
+		minLine = nbLigneDesc2;
+	} else {
+		maxLine = nbLigneDesc2;
+		minLine = nbLigneDesc1;
+	}
+
+	for(i = 0; i < maxLine; i++) {
+		if(descMax == 1) {
+			fgets(buffer, BUFFER_SIZE, descriptorFile1);
+		} else {
+			fgets(buffer, BUFFER_SIZE, descriptorFile2);
+		}
+		sscanf(buffer, "%d\t%s", &value, key);
+		add_key_value(&histogramText, key, value);
+		max += value;
+	}
+	for(i = 0; i < minLine; i++) {
+		if(descMax == 1) {
+			fgets(buffer, BUFFER_SIZE, descriptorFile2);
+		} else {
+			fgets(buffer, BUFFER_SIZE, descriptorFile1);
+		}
+		sscanf(buffer, "%d\t%s", &value, key);
+		if(get_value(&histogramText, key, &ret) == 0) {
+			if(value > ret) {
+				nbSameValue += ret;
+			} else {
+				nbSameValue += value;
+			}
 		}
 	}
-	return(nbSameValue / (float)nbLinesMax * 100.0);
+	return(nbSameValue / (float)max * 100.0);
 }
+
+
