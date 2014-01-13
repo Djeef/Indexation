@@ -18,6 +18,15 @@
 #include <sys/stat.h>
 
 /**
+ * \file descriptor.c
+ * \author Yoanna Zerbib
+ * \brief Crée et manipuler des descripteurs pour des fichiers xml.
+ * \version 1
+ * \date 25 decembre 2013.
+ *
+ */
+
+/**
 * \fn void init_descriptor(Descriptor *d)
 * \brief Permet d'initialiser un descripteur.
 *

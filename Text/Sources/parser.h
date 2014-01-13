@@ -18,6 +18,15 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+/**
+ * \file parser.h
+ * \author Yoanna Zerbib
+ * \brief Permet de "parser" un fichier xml. 
+ * \version 1
+ * \date 25 decembre 2013.
+ * 
+ */
+
 int good_word(char* word, FILE *log);
 int get_words(FILE *file, FILE *log, FILE *descriptorBase, char *filename);
 

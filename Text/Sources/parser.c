@@ -20,6 +20,15 @@
 #include <ctype.h>
 
 /**
+ * \file parser.c
+ * \author Yoanna Zerbib
+ * \brief Permet de "parser" un fichier xml. 
+ * \version 1
+ * \date 25 decembre 2013.
+ * 
+ */
+
+/**
 * \fn int good_word(char* word)
 * \brief Permet de ne garder que les 'bons' mots
 *

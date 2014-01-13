@@ -21,6 +21,15 @@
 #define MAX_BUFFER_SIZE 1000
 
 /**
+ * \file histogramText.h
+ * \author Yoanna Zerbib
+ * \brief Crée et manipuler des histogrammes pour des fichiers xml.
+ * \version 1
+ * \date 25 decembre 2013.
+ *
+ */
+
+/**
 * \struct Cel
 * \brief Cellule d'un histogramme.
 *

@@ -15,6 +15,16 @@
 #define DESCRIPTOR_H
 
 /**
+ * \file descriptor.h
+ * \author Yoanna Zerbib
+ * \brief Crée et manipuler des descripteurs pour des fichiers xml.
+ * \version 1
+ * \date 25 decembre 2013.
+ *
+ */
+
+
+/**
 * \struct Descriptor
 * \brief Descriptor.
 *

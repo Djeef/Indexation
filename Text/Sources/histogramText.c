@@ -15,6 +15,16 @@
 #include <time.h>
 
 /**
+ * \file histogramText.c
+ * \author Yoanna Zerbib
+ * \brief Crée et manipuler des histogrammes pour des fichiers xml.
+ * \version 1
+ * \date 25 decembre 2013.
+ *
+ */
+
+
+/**
 * \fn void init_histogram(Histogram *h)
 * \brief Initialise un histogramme.
 *
