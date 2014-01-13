@@ -145,6 +145,7 @@ int main(int argc, char *argv[]) {
 
 	time(&aclock);
 
+	// Ouverture du fichier de log et du corpus
 	log = fopen("log.log", "a");
 	fprintf(log, "%s", ctime(&aclock));
 	data = opendir("Data/");
@@ -152,6 +153,7 @@ int main(int argc, char *argv[]) {
 		fprintf(log, "OPPENING DATABASE FAIL ");
 		return(EXIT_FAILURE);
 	}
+	// Ouverture des bases avec création du dossier Bases si il n'existe pas 
 	descriptorBaseSound = fopen("Bases/liste_base_audio.base", "a+");
 	if(descriptorBaseSound == NULL) {
 		system("mkdir Bases");
@@ -160,14 +162,24 @@ int main(int argc, char *argv[]) {
 	descriptorBasePictures = fopen("Bases/liste_base_image.base", "a+");
 	descriptorBaseTexts = fopen("Bases/liste_base_text.base", "a+");
 
+	// Verifie que tous les fichiers sont présent 
+	// Si ce n'est pas le cas il supprime les descripteurs
 	checkDescriptorBase(descriptorBaseSound, log, "sound");
 	checkDescriptorBase(descriptorBasePictures, log, "image");
 	checkDescriptorBase(descriptorBaseTexts, log, "text");
+
+	// Début de l'indexation
 	while((currentElement = readdir(data))) {
+		// On récupère l'extention pour ensuite la tester
 		extractExtension(currentElement->d_name, extension);
+		/**
+		 * Fichier audio
+		 */
 		if(strcmp(extension, ".wav") == 0) {
+			// On crée le chemin d'accès au fichier
 			createPath(currentElement->d_name, "Data/", extension, path);
 			fprintf(log, "OPPENING FILE : %s \t ", path);
+			// On récupère son ID dans la base, si il n'existe pas, on l'indexe
 			if(!getIdInDescriptorBase(descriptorBaseSound, id, path)) {
 				openWavFile(&wavFile, path);
 				if(writeDescriptor(&wavFile, descriptorBaseSound, log) == -1) {
@@ -177,16 +189,22 @@ int main(int argc, char *argv[]) {
 				fprintf(log, "FILE INDEXED ! \n");
 				closeWavFile(&wavFile);
 			} else {
+				// Si il existe, on test si il a été modifier 
 				ret = getIfFileHasModified(id, path, log, "sound");
+				// Non modifier
 				if(ret == 1) {
 					fprintf(log, "FILE ALLREADY INDEXED ! \n");
+				// Erreur
 				} else if(ret == -1){
 					fprintf(log, "READ DESCRIPTOR FAIL ! \n");
+				// Modifie
 				} else {
 					memset(buffer, 0, BUFFER_SIZE);
 					sprintf(buffer, "%s\t%s\n", path, id);
+					// On supprime le descripteurs
 					supprDescriptorHeader(descriptorBaseSound, buffer, "sound");
 					supprDescriptor(id, "sound");
+					// On le refait !
 					openWavFile(&wavFile, path);
 					if(writeDescriptor(&wavFile, descriptorBaseSound, log) == -1) {
 						fprintf(log, " : WRITING DATA FAIL ! \n");
@@ -196,13 +214,14 @@ int main(int argc, char *argv[]) {
 					fprintf(log, "FILE HAS BEEN MODIFIED ! \n");
 				}
 			}
-			
 		/**
 		 * Fichier image sous forme de texte
 		 */
 		} else if(strcmp(extension, ".txt") == 0) {
+			// On crée le chemin d'accès au fichier
 			createPath(currentElement->d_name, "Data/", extension, path);
 			fprintf(log, "OPPENING FILE : %s \t ", path);
+			// On récupère son ID dans la base, si il n'existe pas, on l'indexe
 			if(!getIdInDescriptorBase(descriptorBasePictures, id, path)) {
 				currentPicture = fopen(path, "r");
 				if(openPict(currentPicture, log, descriptorBasePictures, path) == -1) {
@@ -212,16 +231,22 @@ int main(int argc, char *argv[]) {
 				fprintf(log, "FILE INDEXED ! \n");
 				fclose(currentPicture);
 			} else {
+				// Si il existe, on test si il a été modifier 
 				ret = getIfFileHasModified(id, path, log, "image");
+				// Non modifier
 				if(ret == 1) {
 					fprintf(log, "FILE ALLREADY INDEXED ! \n");
+				// Erreur
 				} else if(ret == -1){
 					fprintf(log, "READ DESCRIPTOR FAIL ! \n");
+				// Modifie
 				} else {
 					memset(buffer, 0, BUFFER_SIZE);
 					sprintf(buffer, "%s\t%s\n", path, id);
+					// On supprime le descripteurs
 					supprDescriptorHeader(descriptorBasePictures, buffer, "image");
 					supprDescriptor(id, "image");
+					// On le refait !
 					currentPicture = fopen(path, "r");
 					if(openPict(currentPicture, log, descriptorBasePictures, path) == -1) {
 						fprintf(log, " : WRITING IMAGE DATA FAIL ! \n");
@@ -235,8 +260,10 @@ int main(int argc, char *argv[]) {
 		 * Fichier Textes
 		 */
 		} else if(strcmp(extension, ".xml") == 0) {
+			// On crée le chemin d'accès au fichier
 			createPath(currentElement->d_name, "Data/", extension, path);
 			fprintf(log, "OPPENING FILE : %s \t ", path);
+			// On récupère son ID dans la base, si il n'existe pas, on l'indexe
 			if(!getIdInDescriptorBase(descriptorBaseTexts, id, path)) {
 				currentText = fopen(path, "r");
 				if(get_words(currentText, log, descriptorBaseTexts, path) == -1) {
@@ -246,16 +273,22 @@ int main(int argc, char *argv[]) {
 				fprintf(log, "FILE INDEXED ! \n");
 				fclose(currentText);
 			} else {
+				// Si il existe, on test si il a été modifier 
 				ret = getIfFileHasModified(id, path, log, "text");
+				// Non modifier
 				if(ret == 1) {
 					fprintf(log, "FILE ALLREADY INDEXED ! \n");
+				// Erreur
 				} else if(ret == -1){
 					fprintf(log, "READ DESCRIPTOR FAIL ! \n");
+				// Modifie
 				} else {
 					memset(buffer, 0, BUFFER_SIZE);
 					sprintf(buffer, "%s\t%s\n", path, id);
+					// On supprime le descripteurs
 					supprDescriptorHeader(descriptorBaseTexts, buffer, "text");
 					supprDescriptor(id, "text");
+					// On le refait !
 					currentText = fopen(path, "r");
 					if(get_words(currentText, log, descriptorBaseTexts, path) == -1) {
 						fprintf(log, " : WRITING TEXT DATA FAIL ! \n");

@@ -1,13 +1,9 @@
 /**
- * \file dynamiqueIntegerTab.h
+ * \file histogramSound.h
  * \author Jean-François Erdelyi
- * \brief Manipuler des tableau d'entier dynamique.
+ * \brief Manipuler des tableaux d'entier dynamique.
  * \version 1
  * \date 01 decembre 2013.
- * 
- * Permet de créer et manipuler un tableau dynamique d'entier,
- * la valeur est incrémenté de un a chaque fois que l'on rentre la clé
- * on peut créer un tableau avec le nombres de valeurs connue ou non.
  * 
  */
 
